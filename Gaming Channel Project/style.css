@@ -1,0 +1,859 @@
+/* =========================
+   D3LTANIN3ttv • Manic Gaming
+   ========================= */
+
+:root{
+  --bg: #070911;
+  --text: rgba(255,255,255,.92);
+  --muted: rgba(255,255,255,.72);
+
+  --panel: rgba(0,0,0,.28);
+  --panelSolid: rgba(10,12,22,.92);
+  --border: rgba(255,255,255,.12);
+
+  --shadow: 0 18px 45px rgba(0,0,0,.55);
+  --ctaGlow: 0 0 0 1px rgba(0,220,255,.25) inset, 0 0 22px rgba(0,220,255,.18);
+
+  --accentA: #1da6ff;
+  --accentB: #ff2bd6;
+  --accentC: #a6ff2b;
+}
+
+:root[data-theme="light"]{
+  --bg: #f6f7fb;
+  --text: rgba(10,12,18,.92);
+  --muted: rgba(10,12,18,.70);
+
+  --panel: rgba(255,255,255,.70);
+  --panelSolid: rgba(255,255,255,.92);
+  --border: rgba(10,12,18,.14);
+
+  --shadow: 0 18px 45px rgba(10,12,18,.15);
+  --ctaGlow: 0 0 0 1px rgba(0,120,255,.18) inset, 0 0 18px rgba(0,120,255,.12);
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x:hidden;
+}
+
+a{ color: inherit; text-decoration:none; }
+a:focus-visible, button:focus-visible{ outline: 2px solid rgba(255,255,255,.35); outline-offset: 3px; border-radius: 12px; }
+
+.container{
+  width: min(1080px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+.lead{ margin:0; color: var(--muted); line-height: 1.65; }
+
+/* =========================
+   Background
+   ========================= */
+
+.bg{
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+.bg__image{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(1200px 700px at 50% 10%, rgba(29,166,255,.14), transparent 60%),
+    radial-gradient(900px 600px at 50% 85%, rgba(255,43,214,.12), transparent 70%),
+    url("./assets/scenes/bg-crypts.jpg");
+  background-size: cover;
+  background-position: center;
+  filter: saturate(1.02) contrast(1.04);
+  opacity: .92;
+}
+.bg__fog{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  mix-blend-mode: screen;
+  opacity: .55;
+}
+.fog{
+  position:absolute;
+  inset:-20%;
+  background:
+    radial-gradient(closest-side at 30% 40%, rgba(255,255,255,.06), transparent 60%),
+    radial-gradient(closest-side at 60% 55%, rgba(255,255,255,.05), transparent 62%),
+    radial-gradient(closest-side at 45% 70%, rgba(255,255,255,.04), transparent 70%);
+  filter: blur(18px);
+}
+.fog--a{ animation: fogDriftA 22s ease-in-out infinite; }
+.fog--b{ animation: fogDriftB 27s ease-in-out infinite; opacity:.9; }
+.fog--c{ animation: fogDriftC 33s ease-in-out infinite; opacity:.75; }
+
+@keyframes fogDriftA{ 0%,100%{ transform: translate3d(-2%,-1%,0) scale(1.02);} 50%{ transform: translate3d(2%,1%,0) scale(1.05);} }
+@keyframes fogDriftB{ 0%,100%{ transform: translate3d(1%,2%,0) scale(1.03);} 50%{ transform: translate3d(-2%,-1%,0) scale(1.06);} }
+@keyframes fogDriftC{ 0%,100%{ transform: translate3d(0%,1%,0) scale(1.01);} 50%{ transform: translate3d(2%,-2%,0) scale(1.05);} }
+
+.bg__vignette{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(1200px 700px at 50% 25%, rgba(0,0,0,.06), rgba(0,0,0,.80)),
+    radial-gradient(900px 600px at 50% 85%, rgba(0,0,0,.22), rgba(0,0,0,.92));
+}
+:root[data-theme="light"] .bg__vignette{
+  background:
+    radial-gradient(1200px 700px at 50% 25%, rgba(0,0,0,.03), rgba(0,0,0,.45)),
+    radial-gradient(900px 600px at 50% 85%, rgba(0,0,0,.08), rgba(0,0,0,.65));
+}
+.bg__grain{
+  position:absolute;
+  inset:0;
+  opacity:.12;
+  background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.06), rgba(255,255,255,.06) 1px, transparent 1px, transparent 3px);
+  mix-blend-mode: overlay;
+  filter: blur(.4px);
+}
+
+/* =========================
+   Header / Nav
+   ========================= */
+
+.header{
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(0,0,0,.40);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+:root[data-theme="light"] .header{
+  background: rgba(255,255,255,.70);
+  border-bottom: 1px solid rgba(10,12,18,.10);
+}
+
+.header__inner{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 0;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  min-width: 240px;
+}
+
+.brand-logo{
+  position: relative;
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+  overflow: hidden;
+
+  border: 1px solid rgba(140,90,255,.55);
+  background: radial-gradient(circle at center, rgba(0,0,0,.85) 0%, rgba(0,0,0,.55) 60%, rgba(0,0,0,.25) 100%);
+
+  box-shadow:
+    0 0 0 1px rgba(140,90,255,.45) inset,
+    0 0 18px rgba(140,90,255,.85),
+    0 0 48px rgba(120,70,255,.55),
+    0 0 90px rgba(120,70,255,.35),
+    0 14px 30px rgba(0,0,0,.35);
+}
+
+.brand-logo img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit: fill;
+
+  filter:
+    contrast(1.35)
+    brightness(1.15)
+    saturate(1.25)
+    drop-shadow(0 0 6px rgba(0,0,0,.6));
+}
+
+.skull--dark{ display:block; }
+.skull--light{ display:none; }
+:root[data-theme="light"] .skull--dark{ display:none; }
+:root[data-theme="light"] .skull--light{ display:block; }
+
+.brand-text{ display:flex; flex-direction:column; line-height:1.05; }
+.brand-name{
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+.brand-tagline{
+  font-size: 11px;
+  letter-spacing: .12em;
+  opacity: .78;
+}
+
+.nav{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 999px;
+  background: rgba(0,0,0,.22);
+  backdrop-filter: blur(10px);
+}
+:root[data-theme="light"] .nav{
+  background: rgba(255,255,255,.60);
+  border: 1px solid rgba(10,12,18,.12);
+}
+
+.nav-link{
+  font-weight: 800;
+  font-size: 13px;
+  opacity: .96;
+  padding: 10px 12px;
+  border-radius: 999px;
+  transition: .18s ease;
+  color: var(--text);
+
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.10);
+}
+:root[data-theme="light"] .nav-link{
+  background: rgba(10,12,18,.05);
+  border: 1px solid rgba(10,12,18,.10);
+}
+.nav-link:hover{
+  opacity: 1;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.14) inset, 0 10px 20px rgba(0,0,0,.18);
+}
+
+.nav-dropdown{ position: relative; }
+.nav-button{
+  cursor: pointer;
+  appearance: none;
+}
+.caret{ opacity:.8; margin-left: 4px; }
+
+.nav-menu{
+  position:absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  min-width: 200px;
+  padding: 10px;
+  border-radius: 14px;
+  background: var(--panelSolid);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  display:none;
+}
+.nav-menu.is-open{ display:block; }
+.nav-menu a{
+  display:block;
+  padding: 10px 10px;
+  border-radius: 10px;
+  opacity:.92;
+}
+.nav-menu a:hover{
+  background: rgba(255,255,255,.06);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.10) inset;
+}
+:root[data-theme="light"] .nav-menu a:hover{
+  background: rgba(10,12,18,.06);
+  box-shadow: 0 0 0 1px rgba(10,12,18,.10) inset;
+}
+
+/* =========================
+   Hero
+   ========================= */
+
+.hero{ padding: 30px 0 10px; }
+.hero-grid{
+  display:grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 22px;
+  align-items:center;
+}
+.hero-copy{ padding: 10px 0; }
+
+.badge{
+  display:inline-block;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 12px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.10);
+}
+:root[data-theme="light"] .badge{
+  background: rgba(10,12,18,.05);
+  border: 1px solid rgba(10,12,18,.10);
+}
+
+.hero-title{
+  margin: 14px 0 6px;
+  font-size: clamp(42px, 4.4vw, 60px);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.hero-sub{
+  letter-spacing: .14em;
+  opacity:.8;
+  font-weight: 700;
+  font-size: 12px;
+}
+.hero-desc{
+  margin: 14px 0 0;
+  color: var(--muted);
+  line-height: 1.65;
+  max-width: 55ch;
+}
+
+.hero-actions{
+  display:flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  font-weight: 900;
+  font-size: 13px;
+  transition: .18s ease;
+}
+:root[data-theme="light"] .btn{
+  background: rgba(10,12,18,.05);
+  border: 1px solid rgba(10,12,18,.12);
+}
+.btn:hover{ transform: translateY(-1px); box-shadow: var(--ctaGlow); }
+
+.btn-primary{
+  background: linear-gradient(135deg, rgba(29,166,255,.18), rgba(255,43,214,.12));
+  border-color: rgba(29,166,255,.25);
+}
+.btn-ghost{
+  background: rgba(255,255,255,.04);
+}
+
+/* hero card image */
+.hero-right{ display:flex; flex-direction:column; align-items:center; }
+.heroCard{
+  position: relative;
+  width: min(420px, 100%);
+  aspect-ratio: 16/11;
+  border-radius: 20px;
+  overflow:hidden;
+  border: none;
+  box-shadow:
+    var(--shadow),
+    0 0 0 1px rgba(255,255,255,.05) inset;
+}
+.heroCard::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  border-radius: inherit;
+  z-index: 4;
+  background: linear-gradient(
+    to left,
+    rgba(0,0,0,.77) 0%,
+    rgba(0,0,0,.18) 10%,
+    rgba(0,0,0,0) 22%
+  );
+}
+:root[data-theme="light"] .heroCard{ border-color: rgba(10,12,18,.12); }
+
+.heroCard__img{
+  position:absolute;
+  inset:0;
+  background-image: url("./assets/scenes/card-haunted.jpg");
+  background-size: cover;
+  background-position: center;
+  filter: saturate(1.05) contrast(1.05);
+}
+.heroCard__frame{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(900px 400px at 50% 20%, rgba(29,166,255,.18), transparent 60%),
+    radial-gradient(900px 500px at 50% 90%, rgba(255,43,214,.14), transparent 65%);
+  mix-blend-mode: screen;
+  opacity: .9;
+}
+.heroCard__glow{
+  position:absolute;
+  inset:-20%;
+  filter: blur(30px);
+  opacity: .5;
+}
+.heroCard__glow--a{ background: radial-gradient(circle at 20% 30%, rgba(29,166,255,.35), transparent 55%); }
+.heroCard__glow--b{ background: radial-gradient(circle at 80% 70%, rgba(255,43,214,.30), transparent 55%); }
+
+/* =========================
+   Sections / Panels
+   ========================= */
+
+.section{ padding: 28px 0; }
+.section__head{ margin-bottom: 14px; }
+.section__title{
+  margin:0 0 6px;
+  font-size: 22px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.section__subtitle{
+  margin:0;
+  color: var(--muted);
+}
+
+.panel{
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow:
+    0 18px 45px rgba(0,0,0,.22),
+    0 0 18px rgba(29,166,255,.18),
+    0 0 28px rgba(255,43,214,.12);
+}
+
+.panel--wide{ padding: 18px; }
+
+.list{ margin:0; padding-left: 18px; }
+.list li{ margin: 10px 0; color: var(--muted); }
+.list strong{ color: var(--text); }
+
+/* =========================
+   Watch embed
+   ========================= */
+
+.watch__embed{
+  border-radius: 16px;
+  overflow:hidden;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.35);
+}
+:root[data-theme="light"] .watch__embed{ border-color: rgba(10,12,18,.12); background: rgba(10,12,18,.04); }
+
+#twitchEmbed{
+  width: 100%;
+  height: min(520px, 60vw);
+  border: 0;
+  display:block;
+}
+
+/* =========================
+   Highlight cards
+   ========================= */
+
+.cards{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+.card{
+  position: relative;
+  border-radius: 18px;
+  overflow:hidden;
+  min-height: 180px;
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 16px 40px rgba(0,0,0,.28);
+  cursor: pointer;
+  isolation:isolate;
+}
+:root[data-theme="light"] .card{ border-color: rgba(10,12,18,.12); }
+
+.card__bg{
+  position:absolute;
+  inset:0;
+  background-size: cover;
+  background-position: center;
+  filter: saturate(1.05) contrast(1.06);
+  opacity: .85;
+}
+.card__bg--crypts{ background-image: url("./assets/scenes/card-crypts.jpg"); }
+.card__bg--haunted{ background-image: url("./assets/scenes/card-haunted.jpg"); }
+.card__bg--darkworlds{ background-image: url("./assets/scenes/card-dark-worlds.jpg"); }
+
+.card__glow{
+  position:absolute;
+  inset:-20%;
+  filter: blur(28px);
+  opacity: .45;
+  mix-blend-mode: screen;
+  z-index: 0;
+}
+.card__glow--green{ background: radial-gradient(circle at 20% 30%, rgba(166,255,43,.30), transparent 60%); }
+.card__glow--gold{ background: radial-gradient(circle at 20% 30%, rgba(255,200,80,.28), transparent 60%); }
+.card__glow--purple{ background: radial-gradient(circle at 20% 30%, rgba(124,92,255,.30), transparent 60%); }
+
+.card__icon{
+  position:absolute;
+  top: 14px;
+  left: 14px;
+  width: 44px;
+  height: 44px;
+  display:grid;
+  place-items:center;
+  border-radius: 12px;
+  background: rgba(0,0,0,.35);
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 12px 24px rgba(0,0,0,.25);
+  z-index: 2;
+}
+.card__icon svg{
+  width: 26px;
+  height: 26px;
+  display:block;
+  color: rgba(255,255,255,.92);
+}
+:root[data-theme="light"] .card__icon{
+  background: rgba(255,255,255,.70);
+  border: 1px solid rgba(10,12,18,.12);
+}
+:root[data-theme="light"] .card__icon svg{ color: rgba(10,12,18,.88); }
+
+.card__title{
+  position:absolute;
+  left: 14px;
+  bottom: 34px;
+  margin:0;
+  font-weight: 950;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  z-index: 2;
+}
+.card__meta{
+  position:absolute;
+  left: 14px;
+  bottom: 12px;
+  margin:0;
+  color: rgba(255,255,255,.78);
+  z-index: 2;
+}
+:root[data-theme="light"] .card__meta{ color: rgba(10,12,18,.70); }
+
+.card:hover{ transform: translateY(-2px); transition: .18s ease; }
+
+/* hide card names ONLY in highlights section */
+#highlights .card__title,
+#highlights .card__meta{
+  display: none;
+}
+
+/* Highlights clip area */
+.highlightsClips{
+  margin-top: 14px;
+  margin-bottom: 14px; /* keeps a clean gap before the cards */
+}
+
+.clipsGrid{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.clipSlot{
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.18);
+  box-shadow: 0 14px 34px rgba(0,0,0,.20);
+}
+:root[data-theme="light"] .clipSlot{
+  border-color: rgba(10,12,18,.12);
+  background: rgba(255,255,255,.22);
+  box-shadow: 0 14px 34px rgba(10,12,18,.10);
+}
+
+.clipSlot__embed{
+  width: 100%;
+  aspect-ratio: 16/9;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(700px 260px at 50% 35%, rgba(29,166,255,.12), transparent 60%),
+    radial-gradient(700px 320px at 50% 85%, rgba(255,43,214,.10), transparent 65%),
+    rgba(0,0,0,.22);
+}
+
+/* NEW: make embedded iframes fill the slot cleanly */
+.clipSlot__embed iframe{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* =========================
+   Games (mounted by JS)
+   ========================= */
+
+.games{
+  display:grid;
+  grid-template-columns: 220px 1fr;
+  gap: 16px;
+}
+.gameTags{
+  display:flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.gameTag{
+  width:100%;
+  text-align:left;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  color: var(--text);
+  font-weight: 900;
+  cursor:pointer;
+  transition: .18s ease;
+}
+:root[data-theme="light"] .gameTag{
+  background: rgba(10,12,18,.04);
+  border: 1px solid rgba(10,12,18,.10);
+}
+.gameTag:hover{ box-shadow: var(--ctaGlow); transform: translateY(-1px); }
+.gameTag.is-active{ box-shadow: var(--ctaGlow); border-color: rgba(29,166,255,.28); }
+
+.gameGrid{
+  display:grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.miniCard{
+  position:relative;
+  border-radius: 16px;
+  overflow:hidden;
+  min-height: 150px;
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 16px 40px rgba(0,0,0,.22);
+}
+:root[data-theme="light"] .miniCard{ border-color: rgba(10,12,18,.12); }
+
+.miniCard__bg{
+  position:absolute;
+  inset:0;
+  background-size: cover;
+  background-position:center;
+  opacity:.85;
+  filter: saturate(1.05) contrast(1.06);
+}
+
+/* Games mini cards: readability fix */
+.miniCard__shade{
+  position:absolute;
+  inset:0;
+  z-index: 1;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,.78) 0%,
+    rgba(0,0,0,.40) 45%,
+    rgba(0,0,0,.12) 100%
+  );
+  pointer-events:none;
+}
+:root[data-theme="light"] .miniCard__shade{
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,.74) 0%,
+    rgba(0,0,0,.38) 45%,
+    rgba(0,0,0,.10) 100%
+  );
+}
+
+.miniCard__badge{
+  position:absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  display:inline-flex;
+  align-items:center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 12px;
+  letter-spacing: .06em;
+  color: rgba(255,255,255,.92);
+  text-shadow: 0 2px 10px rgba(0,0,0,.85);
+  background: rgba(0,0,0,.55);
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 12px 24px rgba(0,0,0,.25);
+  backdrop-filter: blur(6px);
+}
+:root[data-theme="light"] .miniCard__badge{
+  background: rgba(0,0,0,.62);
+  border-color: rgba(255,255,255,.22);
+}
+
+.miniCard__title{
+  position:absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 38px;
+  z-index: 2;
+  margin:0;
+  font-weight: 950;
+  letter-spacing: .04em;
+  color: rgba(255,255,255,.94);
+  text-shadow: 0 2px 12px rgba(0,0,0,.90);
+}
+.miniCard__desc{
+  position:absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  z-index: 2;
+  margin:0;
+  color: rgba(255,255,255,.86);
+  text-shadow: 0 2px 12px rgba(0,0,0,.90);
+}
+:root[data-theme="light"] .miniCard__title{
+  color: rgba(255,255,255,.96);
+  text-shadow: 0 2px 12px rgba(0,0,0,.92);
+}
+:root[data-theme="light"] .miniCard__desc{
+  color: rgba(255,255,255,.88);
+  text-shadow: 0 2px 12px rgba(0,0,0,.92);
+}
+
+/* Footer */
+.footer{
+  padding: 28px 0 80px;
+}
+.footer__inner{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.footer__meta{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  color: var(--muted);
+}
+.dot{ opacity:.6; }
+
+.toTop{
+  border-radius: 999px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  font-weight: 900;
+  cursor:pointer;
+}
+.toTop:hover{ box-shadow: var(--ctaGlow); transform: translateY(-1px); }
+
+/* Corner badge (bottom-right manicgaming) */
+.corner-badge{
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  width: 78px;
+  height: 78px;
+  border-radius: 14px;
+  object-fit: cover;
+  z-index: 30;
+  box-shadow: 0 18px 40px rgba(0,0,0,.45);
+  border: 1px solid rgba(255,255,255,.12);
+  opacity: .95;
+}
+:root[data-theme="light"] .corner-badge{
+  border: 1px solid rgba(10,12,18,.12);
+  box-shadow: 0 16px 34px rgba(10,12,18,.18);
+}
+
+/* Responsive */
+@media (max-width: 980px){
+  .hero-grid{ grid-template-columns: 1fr; }
+  .brand{ min-width: unset; }
+  .cards{ grid-template-columns: 1fr; }
+  .games{ grid-template-columns: 1fr; }
+  .gameGrid{ grid-template-columns: 1fr; }
+  .clipsGrid{ grid-template-columns: 1fr; }
+}
+
+/* Pill color unification (match "Watch Live") */
+:root{
+  --pillGrad: linear-gradient(135deg, rgba(29,166,255,.18), rgba(255,43,214,.12));
+  --pillBorder: rgba(29,166,255,.25);
+  --pillGlow: 0 0 0 1px rgba(255,255,255,.08) inset, 0 12px 26px rgba(0,0,0,.35);
+}
+:root[data-theme="light"]{
+  --pillGrad: linear-gradient(135deg, rgba(29,166,255,.16), rgba(255,43,214,.10));
+  --pillBorder: rgba(10,12,18,.18);
+}
+.nav-link{
+  background: var(--pillGrad) !important;
+  border: 1px solid var(--pillBorder) !important;
+}
+.nav-link:hover{
+  box-shadow: var(--pillGlow), var(--ctaGlow) !important;
+}
+.hero-actions .btn{
+  background: var(--pillGrad) !important;
+  border: 1px solid var(--pillBorder) !important;
+}
+.hero-actions .btn:hover{
+  box-shadow: var(--pillGlow), var(--ctaGlow) !important;
+}
+
+/* Theme readability fixes (CLEANED) */
+.bg::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(1200px 700px at 50% 20%, rgba(255,255,255,.72), rgba(255,255,255,.12) 55%, rgba(255,255,255,.06) 100%),
+    linear-gradient(to bottom, rgba(255,255,255,.35), rgba(255,255,255,.14));
+  opacity: 0;
+  transition: opacity .22s ease;
+}
+:root[data-theme="light"] .bg::after{ opacity: .32; }
+:root[data-theme="light"] .bg__image{
+  opacity: .82;
+  filter: saturate(1.05) contrast(1.04) brightness(1.02);
+}
+:root[data-theme="light"] .bg__fog{ opacity: .40; }
+:root[data-theme="light"] .bg__vignette{
+  background:
+    radial-gradient(1200px 700px at 50% 25%, rgba(0,0,0,.05), rgba(0,0,0,.40)),
+    radial-gradient(900px 600px at 50% 85%, rgba(0,0,0,.10), rgba(0,0,0,.60));
+}
+:root[data-theme="light"] a:focus-visible,
+:root[data-theme="light"] button:focus-visible{
+  outline: 2px solid rgba(10,12,18,.55);
+}
+:root[data-theme="light"] .hero-copy{
+  background: rgba(255,255,255,.22);
+  border: 1px solid rgba(10,12,18,.08);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.22) inset;
+  border-radius: 18px;
+  backdrop-filter: blur(10px);
+  padding: 18px;
+}
