@@ -856,4 +856,40 @@ a:focus-visible, button:focus-visible{ outline: 2px solid rgba(255,255,255,.35);
   border-radius: 18px;
   backdrop-filter: blur(10px);
   padding: 18px;
+
+}
+/* =========================
+   Pixel dissolve overlay
+   (required by script.js)
+   ========================= */
+.pixelOverlay{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: rgba(0,0,0,.85);
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+
+.pixelOverlay.is-on{
+  opacity: 1;
+}
+
+.pixelOverlay__grid{
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  grid-template-rows: repeat(var(--rows), 1fr);
+}
+
+.px{
+  background: rgba(0,0,0,.95);
+  transition: opacity .55s ease, transform .55s ease;
+}
+
+.px.off{
+  opacity: 0;
+  transform: scale(.75);
 }
