@@ -191,10 +191,17 @@
 
     requestAnimationFrame(() => overlay.classList.add("is-on"));
 
-    pixels.forEach((px, i) => {
-      const delay = i * 7;
-      setTimeout(() => px.classList.add("off"), delay);
-    });
+    // assign per-pixel delay via CSS variable (no timer storm)
+pixels.forEach((px, i) => {
+  px.style.setProperty("--d", `${i * 7}ms`);
+});
+
+// Trigger dissolve in one go (two RAFs ensures styles are applied)
+requestAnimationFrame(() => overlay.classList.add("is-on"));
+requestAnimationFrame(() => grid.classList.add("go"));
+
+const end = total * 7 + 650;
+setTimeout(() => overlay.remove(), end);
 
     const end = total * 7 + 650;
     setTimeout(() => overlay.remove(), end);
@@ -365,4 +372,5 @@
     // run intro LAST so it overlays everything cleanly
     runPixelDissolve();
   });
+
 })();
