@@ -160,56 +160,57 @@
      (pure overlay, removed after)
      ========================= */
   function runPixelDissolve() {
-    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-    if (reduce) return;
+  const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+  if (reduce) return;
 
-    const overlay = document.createElement("div");
-    overlay.className = "pixelOverlay";
-    overlay.innerHTML = `<div class="pixelOverlay__grid" aria-hidden="true"></div>`;
-    document.body.appendChild(overlay);
+  const overlay = document.createElement("div");
+  overlay.className = "pixelOverlay";
+  overlay.innerHTML = `<div class="pixelOverlay__grid" aria-hidden="true"></div>`;
+  document.body.appendChild(overlay);
 
-    const grid = overlay.querySelector(".pixelOverlay__grid");
-    if (!grid) return;
+  const grid = overlay.querySelector(".pixelOverlay__grid");
+  if (!grid) return;
 
-    const cols = 24;
-    const rows = 14;
-    const total = cols * rows;
+  const cols = 24;
+  const rows = 14;
+  const total = cols * rows;
 
-    grid.style.setProperty("--cols", String(cols));
-    grid.style.setProperty("--rows", String(rows));
+  grid.style.setProperty("--cols", String(cols));
+  grid.style.setProperty("--rows", String(rows));
 
-    const frag = document.createDocumentFragment();
-    for (let i = 0; i < total; i++) {
-      const px = document.createElement("span");
-      px.className = "px";
-      frag.appendChild(px);
-    }
-    grid.appendChild(frag);
+  const frag = document.createDocumentFragment();
+  for (let i = 0; i < total; i++) {
+    const px = document.createElement("span");
+    px.className = "px";
+    frag.appendChild(px);
+  }
+  grid.appendChild(frag);
 
-    const pixels = $$(".px", grid);
-    pixels.sort(() => Math.random() - 0.5);
+  const pixels = $$(".px", grid);
+  pixels.sort(() => Math.random() - 0.5);
 
   requestAnimationFrame(() => overlay.classList.add("is-on"));
 
-// shuffle pixel order for retro-style dissolve
-const shuffled = [...pixels].sort(() => Math.random() - 0.5);
+  // shuffle pixel order for retro-style dissolve
+  const shuffled = [...pixels].sort(() => Math.random() - 0.5);
 
-shuffled.forEach((px, i) => {
-  px.style.setProperty("--d", `${i * 7}ms`);
+  shuffled.forEach((px, i) => {
+    px.style.setProperty("--d", `${i * 7}ms`);
 
-  // slight per-pixel brightness variation for retro depth
-  const alpha = (0.82 + Math.random() * 0.16).toFixed(2);
-  px.style.setProperty("--px-a", alpha);
-});
-
-requestAnimationFrame(() => {
-  requestAnimationFrame(() => {
-    grid.classList.add("go");
+    // slight per-pixel brightness variation for retro depth
+    const alpha = (0.82 + Math.random() * 0.16).toFixed(2);
+    px.style.setProperty("--px-a", alpha);
   });
-});
 
-const end = total * 7 + 650;
-setTimeout(() => overlay.remove(), end);
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      grid.classList.add("go");
+    });
+  });
+
+  const end = total * 7 + 650;
+  setTimeout(() => overlay.remove(), end);
+}
 
 function runPixelExit(onDone) {
   const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
@@ -264,8 +265,7 @@ function runPixelExit(onDone) {
     onDone?.();
     overlay.remove();
   }, end);
- }
-}    
+}
   /* =========================
      Highlight cards -> external links
      ========================= */
@@ -436,6 +436,7 @@ function runPixelExit(onDone) {
   });
 
 })();
+
 
 
 
