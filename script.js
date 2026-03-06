@@ -187,7 +187,6 @@
   grid.appendChild(frag);
 
   const pixels = $$(".px", grid);
-  pixels.sort(() => Math.random() - 0.5);
 
   requestAnimationFrame(() => overlay.classList.add("is-on"));
 
@@ -436,6 +435,7 @@ function runPixelExit(onDone) {
   });
 
 })();
+
 
 
 
