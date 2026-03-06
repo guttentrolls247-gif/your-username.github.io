@@ -140,15 +140,20 @@
       <div class="panel panel--wide">
         <div class="watch">
           <div class="watch__embed">
-            <iframe
-              id="twitchEmbed"
-              title="Twitch Stream"
-              data-channel="D3LTANIN3ttv"
-              allowfullscreen
-              scrolling="no"
-              loading="lazy">
-            </iframe>
+          <div class="twitchLoader" id="twitchLoader">
+            <span class="twitchLoader__spinner"></span>
+            <span class="twitchLoader__text">Loading stream...</span>
           </div>
+        
+          <iframe
+            id="twitchEmbed"
+            title="Twitch Stream"
+            data-channel="D3LTANIN3ttv"
+            allowfullscreen
+            scrolling="no"
+            loading="lazy">
+          </iframe>
+        </div>
         </div>
       </div>
     </section>
@@ -322,3 +327,4 @@
 </body>
 
 </html>
+
