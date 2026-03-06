@@ -128,7 +128,6 @@
   iframe.addEventListener("load", () => {
     if (loader) loader.classList.add("is-hidden");
   });
-}
   }
   function initYouTubeLiteEmbeds() {
   const thumbs = $$(".clipThumb[data-youtube-id]");
@@ -377,4 +376,5 @@
   });
 
 })();
+
 
