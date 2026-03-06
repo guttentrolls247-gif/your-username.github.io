@@ -183,7 +183,7 @@
       });
     });
 
-    const end = total * 7 + 650;
+    const end = total * 7 + 560;
     setTimeout(() => overlay.remove(), end);
   }
 
@@ -413,6 +413,7 @@
     runPixelDissolve();
   });
 })();
+
 
 
 
