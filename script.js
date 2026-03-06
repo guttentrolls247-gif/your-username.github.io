@@ -195,7 +195,11 @@
 const shuffled = [...pixels].sort(() => Math.random() - 0.5);
 
 shuffled.forEach((px, i) => {
-  px.style.setProperty("--d", `${i * 5}ms`);
+  px.style.setProperty("--d", `${i * 7}ms`);
+
+  // slight per-pixel brightness variation for retro depth
+  const alpha = (0.82 + Math.random() * 0.16).toFixed(2);
+  px.style.setProperty("--px-a", alpha);
 });
 
 requestAnimationFrame(() => {
@@ -374,4 +378,5 @@ setTimeout(() => overlay.remove(), end);
   });
 
 })();
+
 
