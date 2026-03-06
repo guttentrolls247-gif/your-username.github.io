@@ -273,6 +273,20 @@ a:focus-visible, button:focus-visible{ outline: 2px solid rgba(255,255,255,.35);
   box-shadow: 0 0 0 1px rgba(10,12,18,.10) inset;
 }
 
+.nav{
+  position: relative;
+}
+
+.nav-primary-menu{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+
+.nav-mobileToggle{
+  display:none;
+}
+
 /* =========================
    Hero
    ========================= */
@@ -1010,6 +1024,25 @@ a:focus-visible, button:focus-visible{ outline: 2px solid rgba(255,255,255,.35);
   }
 }
 
+/* =================================
+   Responsive Layout
+================================= */
+
+@media (max-width: 820px){
+
+  .nav-primary-menu{
+    display:none;
+  }
+
+  .nav-primary-menu.is-open{
+    display:flex;
+  }
+
+  .nav-mobileToggle{
+    display:inline-flex;
+  }
+
+}
 
 
 
