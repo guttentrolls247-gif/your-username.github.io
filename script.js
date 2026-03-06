@@ -109,20 +109,26 @@
   }
 
   function initTwitchEmbed() {
-    const iframe = $("#twitchEmbed");
-    if (!iframe) return;
+  const iframe = $("#twitchEmbed");
+  const loader = $("#twitchLoader");
+  if (!iframe) return;
 
-    const channel = iframe.getAttribute("data-channel") || "D3LTANIN3ttv";
-    const parent = window.location.hostname || "localhost";
+  const channel = iframe.getAttribute("data-channel") || "D3LTANIN3ttv";
+  const parent = window.location.hostname || "localhost";
 
-    if (!iframe.getAttribute("src")) {
-      const src =
-        `https://player.twitch.tv/?channel=${encodeURIComponent(channel)}` +
-        `&parent=${encodeURIComponent(parent)}` +
-        `&muted=true`;
+  if (!iframe.getAttribute("src")) {
+    const src =
+      `https://player.twitch.tv/?channel=${encodeURIComponent(channel)}` +
+      `&parent=${encodeURIComponent(parent)}` +
+      `&muted=true`;
 
-      iframe.setAttribute("src", src);
-    }
+    iframe.setAttribute("src", src);
+  }
+
+  iframe.addEventListener("load", () => {
+    if (loader) loader.classList.add("is-hidden");
+  });
+}
   }
   function initYouTubeLiteEmbeds() {
   const thumbs = $$(".clipThumb[data-youtube-id]");
@@ -369,4 +375,5 @@
     initGamesMount();
     runPixelDissolve();
   });
+
 })();
