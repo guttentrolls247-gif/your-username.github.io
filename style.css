@@ -1030,48 +1030,98 @@ a:focus-visible, button:focus-visible{ outline: 2px solid rgba(255,255,255,.35);
 
 @media (max-width: 820px){
 
- .nav-primary-menu{
-  display: flex;
-  position: absolute;
-  top: calc(100% + 10px);
-  left: 0;
-  right: 0;
-  z-index: 40;
-  padding: 0 10px;
-  border-radius: 14px;
-  background: var(--panelSolid);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-  flex-direction: column;
-  gap: 8px;
-  align-items: stretch;
-
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-8px);
-  transition:
-    max-height .28s ease,
-    opacity .22s ease,
-    transform .22s ease,
-    padding .22s ease;
-}
-
-.nav-primary-menu.is-open{
-  max-height: 420px;
-  padding: 10px;
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
+  /* SHOW the mobile menu button */
   .nav-mobileToggle{
-    display:inline-flex;
+    display: inline-flex;
+  }
+
+  .header__inner{
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .brand{
+    justify-content: center;
+  }
+
+  .nav{
+    position: relative;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-dropdown{
+    width: 100%;
+  }
+
+  .nav-dropdown > .nav-button{
+    width: 100%;
+    min-height: 44px;
+    justify-content: center;
+  }
+
+  #themeBtn{
+    min-height: 44px;
+    min-width: 44px;
+    justify-content: center;
+  }
+
+  .nav-primary-menu{
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    right: 0;
+    z-index: 40;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+
+    padding: 0 10px;
+    border-radius: 14px;
+    background: var(--panelSolid);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-8px);
+    transition:
+      max-height .28s ease,
+      opacity .22s ease,
+      transform .22s ease,
+      padding .22s ease;
+  }
+
+  .nav-primary-menu.is-open{
+    max-height: 420px;
+    padding: 10px;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .nav-primary-menu .nav-link{
+    width: 100%;
+    min-height: 44px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .nav-menu{
+    width: 100%;
+    right: auto;
+    left: 0;
   }
 
 }
-
 
 
 
