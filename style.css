@@ -1123,6 +1123,17 @@ a:focus-visible, button:focus-visible{ outline: 2px solid rgba(255,255,255,.35);
 
 }
 
+@media (max-width: 900px){
+  .cards{
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px){
+  .cards{
+    grid-template-columns: 1fr;
+  }
+}
 
 
 
