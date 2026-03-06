@@ -596,7 +596,7 @@ button:focus-visible{
 .watch__embed{
   position: relative;
   border-radius: 16px;
-  overflow: hidden;
+  overflow:hidden;
   border: 1px solid rgba(255,255,255,.12);
   background: rgba(0,0,0,.35);
 }
@@ -613,43 +613,42 @@ button:focus-visible{
   display:block;
 }
 .twitchLoader{
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  background: rgba(0,0,0,.45);
-  backdrop-filter: blur(6px);
-  z-index: 2;
-  transition: opacity .3s ease, visibility .3s ease;
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  background:rgba(0,0,0,.45);
+  backdrop-filter:blur(6px);
+  z-index:2;
+  transition:opacity .3s ease;
 }
 
 .twitchLoader.is-hidden{
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
+  opacity:0;
+  pointer-events:none;
 }
 
 .twitchLoader__spinner{
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: 3px solid rgba(255,255,255,.25);
-  border-top-color: #9146ff;
-  animation: twitchSpin 1s linear infinite;
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  border:3px solid rgba(255,255,255,.25);
+  border-top-color:#9146ff;
+  animation:twitchSpin 1s linear infinite;
 }
 
 .twitchLoader__text{
-  font-size: 12px;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  opacity: .8;
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  opacity:.8;
 }
 
 @keyframes twitchSpin{
-  to{ transform: rotate(360deg); }
+  to{ transform:rotate(360deg); }
 }
 
 /* =========================
@@ -667,15 +666,15 @@ button:focus-visible{
 }
 
 .card{
-  display: block;
+  display:block;
   position: relative;
   border-radius: 18px;
-  overflow: hidden;
+  overflow:hidden;
   min-height: 180px;
   border: 1px solid rgba(255,255,255,.12);
   box-shadow: 0 16px 40px rgba(0,0,0,.28);
   cursor: pointer;
-  isolation: isolate;
+  isolation:isolate;
   transition:
     transform .18s ease,
     box-shadow .25s ease,
@@ -686,7 +685,7 @@ button:focus-visible{
 .card__icon,
 .card__title,
 .card__meta{
-  pointer-events: none;
+  pointer-events:none;
 }
 
 .card:hover{
@@ -1383,6 +1382,7 @@ button:focus-visible{
   }
 
 }
+
 
 
 
