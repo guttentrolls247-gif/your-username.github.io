@@ -488,7 +488,6 @@ a:focus-visible, button:focus-visible{ outline: 2px solid rgba(255,255,255,.35);
 }
 
 .card:hover{
-   transform: translateY(-6px);
    box-shadow:
      0 10px 30px rgba(0,0,0,.6),
      0 0 12px rgba(120,255,120,.35);
@@ -939,6 +938,7 @@ a:focus-visible, button:focus-visible{ outline: 2px solid rgba(255,255,255,.35);
 #creator .cards{
   margin-top: 22px;
 }
+
 
 
 
