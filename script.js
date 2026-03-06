@@ -38,8 +38,7 @@
   }
 
   /* =========================
-     Theme toggle (skulls swap via CSS)
-     + system theme match (auto, live)
+     Theme toggle
      ========================= */
   function initThemeToggle() {
     const btn = $("#themeBtn");
@@ -48,80 +47,61 @@
     const root = document.documentElement;
     const icon = btn.querySelector(".themeBtn__icon");
 
-    // Keys
-    const THEME_KEY = "theme";       // "light" | "dark"
-    const PREF_KEY = "themePref";    // "system" | "manual"
+    const THEME_KEY = "theme";
+    const PREF_KEY = "themePref";
 
-    // System preference
     const mq = window.matchMedia?.("(prefers-color-scheme: light)");
 
     const setUI = (theme) => {
-      // helps browser-native UI (form controls, etc.) match the theme
       root.style.colorScheme = theme;
-
-      // accessibility + keeps state explicit
       btn.setAttribute("aria-pressed", theme === "light" ? "true" : "false");
       btn.setAttribute("aria-label", theme === "light" ? "Switch to dark theme" : "Switch to light theme");
-
       if (icon) icon.textContent = theme === "light" ? "☀" : "☾";
     };
 
-    // System-follow apply: does NOT write THEME_KEY
     const applySystem = (theme) => {
       root.setAttribute("data-theme", theme);
       setUI(theme);
     };
 
-    // Manual apply: writes THEME_KEY
     const applyManual = (theme) => {
       root.setAttribute("data-theme", theme);
       localStorage.setItem(THEME_KEY, theme);
       setUI(theme);
     };
 
-    // Determine mode
     const pref = localStorage.getItem(PREF_KEY);
     const savedTheme = localStorage.getItem(THEME_KEY);
-
-    // If pref is missing (older version), default to SYSTEM mode so OS changes work.
     const mode = pref === "manual" ? "manual" : "system";
-
     const systemTheme = () => (mq?.matches ? "light" : "dark");
 
     if (mode === "manual" && (savedTheme === "light" || savedTheme === "dark")) {
       applyManual(savedTheme);
     } else {
-      // SYSTEM MODE (default)
       localStorage.setItem(PREF_KEY, "system");
       applySystem(systemTheme());
     }
 
-    // Live sync when in system mode
     const onSystemChange = (e) => {
       const curPref = localStorage.getItem(PREF_KEY);
       if (curPref === "manual") return;
-
       applySystem(e.matches ? "light" : "dark");
     };
 
     if (mq) {
-      // modern browsers
       if (typeof mq.addEventListener === "function") mq.addEventListener("change", onSystemChange);
-      // older safari
       else if (typeof mq.addListener === "function") mq.addListener(onSystemChange);
     }
 
-    // Manual toggle (locks preference)
     btn.addEventListener("click", () => {
       localStorage.setItem(PREF_KEY, "manual");
-
       const cur = root.getAttribute("data-theme") || "dark";
       applyManual(cur === "dark" ? "light" : "dark");
     });
   }
 
   /* =========================
-     Twitch iframe src builder (required "parent=")
+     Twitch iframe src builder
      ========================= */
   function initTwitchEmbed() {
     const iframe = $("#twitchEmbed");
@@ -157,152 +137,153 @@
 
   /* =========================
      Pixel dissolve intro overlay
-     (pure overlay, removed after)
      ========================= */
   function runPixelDissolve() {
-  const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-  if (reduce) return;
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    if (reduce) return;
 
-  const overlay = document.createElement("div");
-  overlay.className = "pixelOverlay";
-  overlay.innerHTML = `<div class="pixelOverlay__grid" aria-hidden="true"></div>`;
-  document.body.appendChild(overlay);
+    const overlay = document.createElement("div");
+    overlay.className = "pixelOverlay";
+    overlay.innerHTML = `<div class="pixelOverlay__grid" aria-hidden="true"></div>`;
+    document.body.appendChild(overlay);
 
-  const grid = overlay.querySelector(".pixelOverlay__grid");
-  if (!grid) return;
+    const grid = overlay.querySelector(".pixelOverlay__grid");
+    if (!grid) return;
 
-  const cols = 24;
-  const rows = 14;
-  const total = cols * rows;
+    const cols = 24;
+    const rows = 14;
+    const total = cols * rows;
 
-  grid.style.setProperty("--cols", String(cols));
-  grid.style.setProperty("--rows", String(rows));
+    grid.style.setProperty("--cols", String(cols));
+    grid.style.setProperty("--rows", String(rows));
 
-  const frag = document.createDocumentFragment();
-  for (let i = 0; i < total; i++) {
-    const px = document.createElement("span");
-    px.className = "px";
-    frag.appendChild(px);
-  }
-  grid.appendChild(frag);
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < total; i++) {
+      const px = document.createElement("span");
+      px.className = "px";
+      frag.appendChild(px);
+    }
+    grid.appendChild(frag);
 
-  const pixels = $$(".px", grid);
+    const pixels = $$(".px", grid);
 
-  requestAnimationFrame(() => overlay.classList.add("is-on"));
+    requestAnimationFrame(() => overlay.classList.add("is-on"));
 
-  // shuffle pixel order for retro-style dissolve
-  const shuffled = [...pixels].sort(() => Math.random() - 0.5);
+    const shuffled = [...pixels].sort(() => Math.random() - 0.5);
 
-  shuffled.forEach((px, i) => {
-    px.style.setProperty("--d", `${i * 7}ms`);
-
-    // slight per-pixel brightness variation for retro depth
-    const alpha = (0.82 + Math.random() * 0.16).toFixed(2);
-    px.style.setProperty("--px-a", alpha);
-  });
-
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      grid.classList.add("go");
+    shuffled.forEach((px, i) => {
+      px.style.setProperty("--d", `${i * 7}ms`);
+      const alpha = (0.82 + Math.random() * 0.16).toFixed(2);
+      px.style.setProperty("--px-a", alpha);
     });
-  });
 
-  const end = total * 7 + 650;
-  setTimeout(() => overlay.remove(), end);
-}
-
-function runPixelExit(onDone) {
-  const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-  if (reduce) {
-    onDone?.();
-    return;
-  }
-
-  const overlay = document.createElement("div");
-  overlay.className = "pixelOverlay pixelOverlay--exit is-on";
-  overlay.innerHTML = `<div class="pixelOverlay__grid" aria-hidden="true"></div>`;
-  document.body.appendChild(overlay);
-
-  const grid = overlay.querySelector(".pixelOverlay__grid");
-  if (!grid) {
-    onDone?.();
-    return;
-  }
-
-  const cols = 24;
-  const rows = 14;
-  const total = cols * rows;
-
-  grid.style.setProperty("--cols", String(cols));
-  grid.style.setProperty("--rows", String(rows));
-
-  const frag = document.createDocumentFragment();
-  for (let i = 0; i < total; i++) {
-    const px = document.createElement("span");
-    px.className = "px";
-    frag.appendChild(px);
-  }
-  grid.appendChild(frag);
-
-  const pixels = $$(".px", grid);
-  const shuffled = [...pixels].sort(() => Math.random() - 0.5);
-
-  shuffled.forEach((px, i) => {
-    px.style.setProperty("--d", `${i * 5}ms`);
-    const alpha = (0.82 + Math.random() * 0.16).toFixed(2);
-    px.style.setProperty("--px-a", alpha);
-  });
-
-  requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      grid.classList.add("go");
+      requestAnimationFrame(() => {
+        grid.classList.add("go");
+      });
     });
-  });
 
-  const end = total * 5 + 400;
-  setTimeout(() => {
-    onDone?.();
-    overlay.remove();
-  }, end);
-}
+    const end = total * 7 + 650;
+    setTimeout(() => overlay.remove(), end);
+  }
+
+  function runPixelExit(onDone) {
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    if (reduce) {
+      onDone?.();
+      return;
+    }
+
+    const overlay = document.createElement("div");
+    overlay.className = "pixelOverlay pixelOverlay--exit is-on";
+    overlay.innerHTML = `<div class="pixelOverlay__grid" aria-hidden="true"></div>`;
+    document.body.appendChild(overlay);
+
+    const grid = overlay.querySelector(".pixelOverlay__grid");
+    if (!grid) {
+      onDone?.();
+      return;
+    }
+
+    const cols = 24;
+    const rows = 14;
+    const total = cols * rows;
+
+    grid.style.setProperty("--cols", String(cols));
+    grid.style.setProperty("--rows", String(rows));
+
+    const frag = document.createDocumentFragment();
+    for (let i = 0; i < total; i++) {
+      const px = document.createElement("span");
+      px.className = "px";
+      frag.appendChild(px);
+    }
+    grid.appendChild(frag);
+
+    const pixels = $$(".px", grid);
+    const shuffled = [...pixels].sort(() => Math.random() - 0.5);
+
+    shuffled.forEach((px, i) => {
+      px.style.setProperty("--d", `${i * 5}ms`);
+      const alpha = (0.82 + Math.random() * 0.16).toFixed(2);
+      px.style.setProperty("--px-a", alpha);
+    });
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        grid.classList.add("go");
+      });
+    });
+
+    const end = total * 5 + 400;
+    setTimeout(() => {
+      onDone?.();
+      overlay.remove();
+    }, end);
+  }
+
   /* =========================
      Highlight cards -> external links
      ========================= */
- function initHighlightCards() {
-  const map = {
-    crypts: "https://www.instagram.com/d3ltanin3ttv/?__pwa=1",
-    haunted: "https://www.youtube.com/@D3LTANIN3ttv",
-    darkworlds: "https://x.com/",
-  };
+  function initHighlightCards() {
+    const map = {
+      crypts: "https://www.instagram.com/d3ltanin3ttv/?__pwa=1",
+      haunted: "https://www.youtube.com/@D3LTANIN3ttv",
+      darkworlds: "https://x.com/",
+    };
 
-  const cards = $$(".card[data-open]");
-  if (!cards.length) return;
+    const cards = $$(".card[data-open]");
+    if (!cards.length) return;
 
-  const open = (key) => {
-    const url = map[key];
-    if (!url) return;
+    const open = (key) => {
+      const url = map[key];
+      if (!url) return;
 
-    runPixelExit(() => {
-      window.location.href = url;
-    });
-  };
+      runPixelExit(() => {
+        window.location.href = url;
+      });
+    };
 
-  cards.forEach((card) => {
-    const key = card.getAttribute("data-open");
-    if (!key) return;
+    cards.forEach((card) => {
+      const key = card.getAttribute("data-open");
+      if (!key) return;
 
-    card.addEventListener("click", () => open(key));
-    card.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
+      card.addEventListener("click", (e) => {
         e.preventDefault();
         open(key);
-      }
+      });
+
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          open(key);
+        }
+      });
     });
-  });
-}
+  }
 
   /* =========================
-     Games section (mount-only; no section injection)
+     Games section
      ========================= */
   function initGamesMount() {
     const mount = $("#gamesMount");
@@ -429,11 +410,8 @@ function runPixelExit(onDone) {
     initFooterBits();
     initHighlightCards();
     initGamesMount();
-
-    // run intro LAST so it overlays everything cleanly
     runPixelDissolve();
   });
-
 })();
 
 
