@@ -895,7 +895,7 @@ a:focus-visible, button:focus-visible{ outline: 2px solid rgba(255,255,255,.35);
   transition: opacity .25s ease;
 
   contain: layout paint;
-  transform: translatez(0);
+  transform: translateZ(0);
   will-change: opacity; 
 }
 
@@ -933,8 +933,24 @@ a:focus-visible, button:focus-visible{ outline: 2px solid rgba(255,255,255,.35);
   transform: scale(.75);
 }
 
+/* pixel exit transition */
+.pixelOverlay--exit{
+  background: transparent;
+}
+
+.pixelOverlay--exit .px{
+  opacity: 0;
+  transform: scale(.75);
+}
+
+.pixelOverlay--exit .pixelOverlay__grid.go .px{
+  opacity: 1;
+  transform: scale(1);
+}
+
 #creator .cards{
   margin-top: 22px;
 }
+
 
 
