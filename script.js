@@ -211,6 +211,60 @@ requestAnimationFrame(() => {
 const end = total * 7 + 650;
 setTimeout(() => overlay.remove(), end);
 
+function runPixelExit(onDone) {
+  const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+  if (reduce) {
+    onDone?.();
+    return;
+  }
+
+  const overlay = document.createElement("div");
+  overlay.className = "pixelOverlay pixelOverlay--exit is-on";
+  overlay.innerHTML = `<div class="pixelOverlay__grid" aria-hidden="true"></div>`;
+  document.body.appendChild(overlay);
+
+  const grid = overlay.querySelector(".pixelOverlay__grid");
+  if (!grid) {
+    onDone?.();
+    return;
+  }
+
+  const cols = 24;
+  const rows = 14;
+  const total = cols * rows;
+
+  grid.style.setProperty("--cols", String(cols));
+  grid.style.setProperty("--rows", String(rows));
+
+  const frag = document.createDocumentFragment();
+  for (let i = 0; i < total; i++) {
+    const px = document.createElement("span");
+    px.className = "px";
+    frag.appendChild(px);
+  }
+  grid.appendChild(frag);
+
+  const pixels = $$(".px", grid);
+  const shuffled = [...pixels].sort(() => Math.random() - 0.5);
+
+  shuffled.forEach((px, i) => {
+    px.style.setProperty("--d", `${i * 5}ms`);
+    const alpha = (0.82 + Math.random() * 0.16).toFixed(2);
+    px.style.setProperty("--px-a", alpha);
+  });
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      grid.classList.add("go");
+    });
+  });
+
+  const end = total * 5 + 400;
+  setTimeout(() => {
+    onDone?.();
+    overlay.remove();
+  }, end);
+}    
   /* =========================
      Highlight cards -> external links
      ========================= */
@@ -225,10 +279,13 @@ setTimeout(() => overlay.remove(), end);
     if (!cards.length) return;
 
     const open = (key) => {
-      const url = map[key];
-      if (!url) return;
-      window.open(url, "_blank", "noopener,noreferrer");
-    };
+  const url = map[key];
+  if (!url) return;
+
+  runPixelExit(() => {
+    window.location.href = url;
+  });
+};
 
     cards.forEach((card) => {
       const key = card.getAttribute("data-open");
@@ -378,5 +435,6 @@ setTimeout(() => overlay.remove(), end);
   });
 
 })();
+
 
 
