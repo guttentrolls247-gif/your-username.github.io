@@ -171,8 +171,8 @@
     const grid = overlay.querySelector(".pixelOverlay__grid");
     if (!grid) return;
 
-    const cols = 30;
-    const rows = 18;
+    const cols = 24;
+    const rows = 14;
     const total = cols * rows;
 
     grid.style.setProperty("--cols", String(cols));
@@ -189,23 +189,23 @@
     const pixels = $$(".px", grid);
     pixels.sort(() => Math.random() - 0.5);
 
-    requestAnimationFrame(() => overlay.classList.add("is-on"));
+  requestAnimationFrame(() => overlay.classList.add("is-on"));
 
-    // assign per-pixel delay via CSS variable (no timer storm)
-pixels.forEach((px, i) => {
-  px.style.setProperty("--d", `${i * 7}ms`);
+// shuffle pixel order for retro-style dissolve
+const shuffled = [...pixels].sort(() => Math.random() - 0.5);
+
+shuffled.forEach((px, i) => {
+  px.style.setProperty("--d", `${i * 5}ms`);
 });
 
-// Trigger dissolve in one go (two RAFs ensures styles are applied)
-requestAnimationFrame(() => overlay.classList.add("is-on"));
-requestAnimationFrame(() => grid.classList.add("go"));
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    grid.classList.add("go");
+  });
+});
 
 const end = total * 7 + 650;
 setTimeout(() => overlay.remove(), end);
-
-    const end = total * 7 + 650;
-    setTimeout(() => overlay.remove(), end);
-  }
 
   /* =========================
      Highlight cards -> external links
@@ -374,3 +374,4 @@ setTimeout(() => overlay.remove(), end);
   });
 
 })();
+
