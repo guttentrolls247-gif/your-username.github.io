@@ -278,13 +278,12 @@ function runPixelExit(onDone) {
     const cards = $$(".card[data-open]");
     if (!cards.length) return;
 
-    const open = (key) => {
+  const open = (key) => {
   const url = map[key];
   if (!url) return;
 
-  runPixelExit(() => {
-    window.location.href = url;
-  });
+  window.location.href = url;
+};
 };
 
     cards.forEach((card) => {
@@ -435,6 +434,7 @@ function runPixelExit(onDone) {
   });
 
 })();
+
 
 
 
