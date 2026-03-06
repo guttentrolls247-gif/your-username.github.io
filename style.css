@@ -939,6 +939,76 @@ a:focus-visible, button:focus-visible{ outline: 2px solid rgba(255,255,255,.35);
   margin-top: 22px;
 }
 
+/* =========================
+   Mobile Layout
+========================= */
+
+@media (max-width: 900px){
+
+  .container{
+    padding: 18px;
+  }
+
+  .nav{
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .hero{
+    padding: 40px 0;
+    text-align: center;
+  }
+
+  .section{
+    padding: 40px 0;
+  }
+
+  .cards{
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .card{
+    min-height: 160px;
+  }
+
+  .gameGrid{
+    grid-template-columns: repeat(2,1fr);
+  }
+
+}
+
+@media (max-width: 600px){
+
+  .hero h1{
+    font-size: 1.9rem;
+  }
+
+  .section__title{
+    font-size: 1.4rem;
+  }
+
+  .card{
+    min-height: 140px;
+  }
+
+  .gameGrid{
+    grid-template-columns: 1fr;
+  }
+
+  .miniCard{
+    min-height: 140px;
+  }
+
+}
+
+@media (max-width: 700px){
+  #twitchEmbed{
+    height: 56.25vw;
+    min-height: 220px;
+    max-height: 360px;
+  }
+}
 
 
 
