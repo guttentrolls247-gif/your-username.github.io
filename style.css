@@ -4,6 +4,7 @@
 
 html{
   overflow-y: scroll;
+  scroll-behavior: smooth;
 }
 
 :root{
@@ -1398,7 +1399,6 @@ button:focus-visible{
   }
 
 }
-
 
 
 
