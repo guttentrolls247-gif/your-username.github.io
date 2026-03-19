@@ -496,7 +496,7 @@ button:focus-visible{
 }
 
 .hero-desc{
-  margin: 14px 0 0;
+  margin: 14px 0 16px;
   color: var(--muted);
   line-height: 1.65;
   max-width: 55ch;
