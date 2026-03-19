@@ -203,13 +203,13 @@ button:focus-visible{
   height: 58px;
   border-radius: 14px;
   overflow: hidden;
-  border: 1px solid rgba(140,90,255,.55);
+  border: 1px solid rgba(120,255,180,.95);
   background: radial-gradient(circle at center, rgba(0,0,0,.85) 0%, rgba(0,0,0,.55) 60%, rgba(0,0,0,.25) 100%);
   box-shadow:
-    0 0 0 1px rgba(140,90,255,.45) inset,
-    0 0 18px rgba(140,90,255,.85),
-    0 0 48px rgba(120,70,255,.55),
-    0 0 90px rgba(120,70,255,.35),
+    0 0 0 1px rgba(120,255,180,.45) inset,
+    0 0 18px rgba(120,255,180,.85),
+    0 0 48px rgba(120,255,180,.55),
+    0 0 90px rgba(120,255,180,.35),
     0 14px 30px rgba(0,0,0,.35);
 }
 
@@ -233,19 +233,19 @@ button:focus-visible{
 :root[data-theme="light"] .skull--light{ display:block; }
 
 :root[data-theme="light"] .brand-logo{
-  border: 1px solid rgba(120,255,180,.95) !important;
+  border: 1px solid rgba(29,166,255,.85) !important;
   background: radial-gradient(
     circle at center,
-    rgba(14,46,28,.95) 0%,
-    rgba(12,34,22,.78) 60%,
-    rgba(8,18,12,.45) 100%
+    rgba(16,32,52,.95) 0%,
+    rgba(12,24,40,.78) 60%,
+    rgba(8,14,24,.45) 100%
   );
 
   box-shadow:
-    0 0 0 1px rgba(120,255,180,.45) inset,
-    0 0 22px rgba(120,255,180,.75),
-    0 0 48px rgba(120,255,180,.55),
-    0 0 96px rgba(120,255,180,.32),
+    0 0 0 1px rgba(29,166,255,.38) inset,
+    0 0 22px rgba(29,166,255,.72),
+    0 0 48px rgba(29,166,255,.50),
+    0 0 96px rgba(29,166,255,.28),
     0 14px 30px rgba(10,12,18,.16) !important;
 }
 
@@ -253,9 +253,9 @@ button:focus-visible{
   filter:
     contrast(1.4)
     brightness(1.1)
-    saturate(1.45)
-    drop-shadow(0 0 12px rgba(120,255,180,.55))
-    drop-shadow(0 0 24px rgba(120,255,180,.35));
+    saturate(1.35)
+    drop-shadow(0 0 12px rgba(29,166,255,.48))
+    drop-shadow(0 0 24px rgba(29,166,255,.28));
 }
 
 .brand-text{

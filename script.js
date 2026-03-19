@@ -156,21 +156,11 @@
     });
   }
 
-  function initFooterBits() {
-    const year = $("#year");
-    if (year) year.textContent = String(new Date().getFullYear());
+ function initFooterBits() {
+  const year = $("#year");
+  if (year) year.textContent = String(new Date().getFullYear());
+}
 
-    const toTop = $("#toTopBtn");
-    if (toTop) {
-      toTop.addEventListener("click", () => {
-        window.scrollTo({
-          top: 0,
-          left: 0,
-          behavior: "smooth"
-        });
-      });
-    }
-  }
 
   function runPixelDissolve() {
     const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
