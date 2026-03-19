@@ -119,6 +119,37 @@ button:focus-visible{
   opacity: .55;
 }
 
+/* =========================
+   Side Texture Overlays
+   ========================= */
+
+.side-texture{
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 120px; /* adjust width if needed */
+  pointer-events: none;
+  z-index: 0;
+  background-image: url("./assets/scenes/twitch-background.jpg"); /* rename if needed */
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 0.55; /* adjust strength */
+  mix-blend-mode: overlay; /* try: overlay / soft-light / normal */
+}
+
+/* LEFT SIDE */
+.side-texture--left{
+  left: 0;
+  background-position: left center;
+}
+
+/* RIGHT SIDE */
+.side-texture--right{
+  right: 0;
+  background-position: right center;
+  transform: scaleX(-1); /* mirrors it so it looks intentional */
+}
+
 .fog{
   position:absolute;
   inset:-20%;
