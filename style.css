@@ -369,6 +369,26 @@ button:focus-visible{
   transform: translateY(-1px);
 }
 
+/* Primary CTA (Watch Live) */
+.btn-primary{
+  background: linear-gradient(135deg, #9146ff, #b86bff);
+  border: 1px solid rgba(145,70,255,.6);
+  color: #fff;
+
+  box-shadow:
+    0 0 12px rgba(145,70,255,.6),
+    0 0 24px rgba(145,70,255,.35),
+    0 10px 25px rgba(0,0,0,.35);
+}
+
+.btn-primary:hover{
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 18px rgba(145,70,255,.8),
+    0 0 36px rgba(145,70,255,.5),
+    0 14px 30px rgba(0,0,0,.45);
+}
+
 .nav-button{
   cursor: pointer;
   appearance: none;
