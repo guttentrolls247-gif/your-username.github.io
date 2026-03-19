@@ -156,11 +156,6 @@ button:focus-visible{
 
 :root[data-theme="light"] .bg::after{ opacity: .32; }
 
-:root[data-theme="light"] .bg__image{
-  opacity: .82;
-  filter: saturate(1.05) contrast(1.04) brightness(1.02);
-}
-
 :root[data-theme="light"] .bg__fog{ opacity: .40; }
 
 :root[data-theme="light"] .bg__vignette{
