@@ -502,60 +502,8 @@ async function initGamesMount() {
   });
 }
 
-    mount.innerHTML = `
-      <div class="games">
-        <div class="gameTags" id="gameTags"></div>
-        <div class="gameGrid" id="gameGrid"></div>
-      </div>
-    `;
 
-    const tagWrap = $("#gameTags", mount);
-    const grid = $("#gameGrid", mount);
-    if (!tagWrap || !grid) return;
-
-    const cardHTML = (g) => {
-      const img = g.img || "./assets/scenes/card-dark-worlds.jpg";
-      const badge = g.badge ? `<span class="miniCard__badge">${g.badge}</span>` : "";
-      return `
-        <article class="miniCard" tabindex="0">
-          <div class="miniCard__bg" style="background-image:url('${img}')"></div>
-          <div class="miniCard__shade"></div>
-          ${badge}
-          <h4 class="miniCard__title">${g.title}</h4>
-          <p class="miniCard__desc">${g.desc || ""}</p>
-        </article>
-      `;
-    };
-
-    const renderTags = () => {
-      tagWrap.innerHTML = FLAVORS.map((f, idx) => {
-        const active = idx === 0 ? "is-active" : "";
-        return `<button class="gameTag ${active}" type="button" data-key="${f.key}" data-theme="${f.theme}">${f.label}</button>`;
-      }).join("");
-    };
-
-    const renderGrid = (key) => {
-      const flavor = FLAVORS.find((f) => f.key === key) || FLAVORS[0];
-      grid.setAttribute("data-theme", flavor.theme || "");
-      grid.innerHTML = flavor.games.map(cardHTML).join("");
-    };
-
-    renderTags();
-    renderGrid(FLAVORS[0].key);
-
-    tagWrap.addEventListener("click", (e) => {
-      const btn = e.target.closest(".gameTag");
-      if (!btn) return;
-
-      $$(".gameTag", tagWrap).forEach((b) => b.classList.remove("is-active"));
-      btn.classList.add("is-active");
-
-      const key = btn.getAttribute("data-key");
-      if (key) renderGrid(key);
-    });
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
+   document.addEventListener("DOMContentLoaded", () => {
     initMobileNav();
     initLinksDropdown();
     initThemeToggle();

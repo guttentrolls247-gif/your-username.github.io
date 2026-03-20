@@ -27,7 +27,7 @@
     <header class="header">
       <div class="container header__inner">
         <a class="brand" href="#">
-          <span class="brand-logo" aria-hidden="true">
+          <span class="brand-logo brand-logo--green" aria-hidden="true">
             <img
               class="skull skull--dark"
               src="./assets/logos/skull-green.jpg"
@@ -72,6 +72,7 @@
               type="button"
               id="linksBtn"
               aria-expanded="false"
+              aria-controls="linksMenu"
             >
               Links <span class="caret">▾</span>
             </button>
@@ -112,6 +113,7 @@
             id="themeBtn"
             type="button"
             aria-label="Toggle theme"
+            aria-pressed="false"
           >
             <span class="themeBtn__icon" aria-hidden="true">☾</span>
           </button>
