@@ -4,7 +4,50 @@
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-  function initDropdown(btnSelector, menuSelector, { closeOnLink = false } = {}) {
+  function initCursorGlow() {
+    const reduce = window.matchMedia?.(
+      "(prefers-reduced-motion: reduce)",
+    )?.matches;
+    const finePointer = window.matchMedia?.("(pointer: fine)")?.matches;
+
+    if (reduce || !finePointer) return;
+
+    let raf = 0;
+    let x = window.innerWidth / 2;
+    let y = window.innerHeight / 2;
+
+    const update = () => {
+      document.body.style.setProperty("--glow-x", `${x}px`);
+      document.body.style.setProperty("--glow-y", `${y}px`);
+      raf = 0;
+    };
+
+    const onMove = (e) => {
+      x = e.clientX;
+      y = e.clientY;
+
+      if (!document.body.classList.contains("is-glow-active")) {
+        document.body.classList.add("is-glow-active");
+      }
+
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+
+    const onLeave = () => {
+      document.body.classList.remove("is-glow-active");
+    };
+
+    window.addEventListener("mousemove", onMove, { passive: true });
+    window.addEventListener("mouseout", (e) => {
+      if (!e.relatedTarget) onLeave();
+    });
+  }
+
+  function initDropdown(
+    btnSelector,
+    menuSelector,
+    { closeOnLink = false } = {},
+  ) {
     const btn = $(btnSelector);
     const menu = $(menuSelector);
     if (!btn || !menu) return;
@@ -65,7 +108,7 @@
       btn.setAttribute("aria-pressed", theme === "light" ? "true" : "false");
       btn.setAttribute(
         "aria-label",
-        theme === "light" ? "Switch to dark theme" : "Switch to light theme"
+        theme === "light" ? "Switch to dark theme" : "Switch to light theme",
       );
       if (icon) icon.textContent = theme === "light" ? "☀" : "☾";
     };
@@ -86,7 +129,10 @@
     const mode = pref === "manual" ? "manual" : "system";
     const systemTheme = () => (mq?.matches ? "light" : "dark");
 
-    if (mode === "manual" && (savedTheme === "light" || savedTheme === "dark")) {
+    if (
+      mode === "manual" &&
+      (savedTheme === "light" || savedTheme === "dark")
+    ) {
       applyManual(savedTheme);
     } else {
       localStorage.setItem(PREF_KEY, "system");
@@ -165,7 +211,9 @@
   }
 
   function runPixelDissolve() {
-    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+    const reduce = window.matchMedia?.(
+      "(prefers-reduced-motion: reduce)",
+    )?.matches;
     if (reduce) return;
 
     const overlay = document.createElement("div");
@@ -217,9 +265,9 @@
 
   function initHighlightCards() {
     const map = {
-      crypts: "https://www.instagram.com/d3ltanin3ttv/?__pwa=1",
-      haunted: "https://www.youtube.com/@D3LTANIN3ttv",
-      darkworlds: "https://x.com/D3LTANIN3ttv?s=20",
+      crypts: "https://www.instagram.com/d3ltanin3ManicGaming/",
+      haunted: "https://www.youtube.com/@D3LTANIN3ManicGaming",
+      darkworlds: "https://x.com/D3LTANIN3MG",
     };
 
     const cards = $$(".card[data-open]");
@@ -249,197 +297,228 @@
     });
   }
 
- async function getCurrentlyPlayingStatus() {
-  const fallback = {
-    game: "DARK SOULS II",
-    note: "Currently grinding through Drangleic.",
-  };
-
-  try {
-    const res = await fetch("./currently-playing.json", { cache: "no-store" });
-    if (!res.ok) return fallback;
-
-    const data = await res.json();
-    return {
-      game:
-        typeof data.game === "string" && data.game.trim()
-          ? data.game.trim()
-          : fallback.game,
-      note:
-        typeof data.note === "string" && data.note.trim()
-          ? data.note.trim()
-          : fallback.note,
+  async function getCurrentlyPlayingStatus() {
+    const fallback = {
+      game: "DARK SOULS II",
+      note: "Currently grinding through Drangleic.",
     };
-  } catch {
-    return fallback;
+
+    try {
+      const res = await fetch("./currently-playing.json", {
+        cache: "no-store",
+      });
+      if (!res.ok) return fallback;
+
+      const data = await res.json();
+      return {
+        game:
+          typeof data.game === "string" && data.game.trim()
+            ? data.game.trim()
+            : fallback.game,
+        note:
+          typeof data.note === "string" && data.note.trim()
+            ? data.note.trim()
+            : fallback.note,
+      };
+    } catch {
+      return fallback;
+    }
   }
-}
 
-async function initGamesMount() {
-  const mount = $("#gamesMount");
-  if (!mount) return;
+  async function initGamesMount() {
+    const mount = $("#gamesMount");
+    if (!mount) return;
 
-  const STREAM_STATUS = await getCurrentlyPlayingStatus();
+    const STREAM_STATUS = await getCurrentlyPlayingStatus();
 
-  const FLAVORS = [
-    {
-      key: "horror",
-      label: "💀 Horror",
-      theme: "green",
-      games: [
-        {
-          title: "Dead Space 3",
-          desc: "Co-op sci-fi horror and necromorph chaos",
-          img: "./assets/scenes/card-haunted.jpg",
-          badge: "Sci-fi",
-        },
-        {
-          title: "Dying Light",
-          desc: "Parkour, infected nights, and pressure",
-          img: "./assets/scenes/card-dark-worlds.jpg",
-          badge: "Action",
-        },
-        {
-          title: "Project Zomboid",
-          desc: "Slow-burn zombie survival sandbox",
-          img: "./assets/scenes/card-crypts.jpg",
-          badge: "Sandbox",
-        },
-        {
-          title: "State of Decay",
-          desc: "Community survival in a dead world",
-          img: "./assets/scenes/card-haunted.jpg",
-          badge: "Survival",
-        },
-      ],
-    },
-    {
-      key: "survival",
-      label: "🪓 Survival",
-      theme: "gold",
-      games: [
-        {
-          title: "DayZ",
-          desc: "Open-ended survival with constant tension",
-          img: "./assets/scenes/bg-crypts.jpg",
-          badge: "Hardcore",
-        },
-        {
-          title: "Rust",
-          desc: "Build, raid, survive, repeat",
-          img: "./assets/scenes/card-dark-worlds.jpg",
-          badge: "PvP",
-        },
-        {
-          title: "Subnautica",
-          desc: "Deep ocean exploration and survival",
-          img: "./assets/scenes/card-crypts.jpg",
-          badge: "Explore",
-        },
-        {
-          title: "Stranded Deep",
-          desc: "Island survival with a rough edge",
-          img: "./assets/scenes/card-haunted.jpg",
-          badge: "Craft",
-        },
-      ],
-    },
-    {
-      key: "indie",
-      label: "🧪 Indie",
-      theme: "blue",
-      games: [
-        {
-          title: "Moonlighter",
-          desc: "Dungeon crawling by night, shopkeeping by day",
-          img: "./assets/scenes/card-crypts.jpg",
-          badge: "Action RPG",
-        },
-        {
-          title: "Terraria",
-          desc: "Build, explore, and fight through chaos",
-          img: "./assets/scenes/card-dark-worlds.jpg",
-          badge: "Sandbox",
-        },
-        {
-          title: "Hollow Knight",
-          desc: "Tight combat in a haunting world",
-          img: "./assets/scenes/bg-crypts.jpg",
-          badge: "Metroidvania",
-        },
-        {
-          title: "Starbound",
-          desc: "Space sandbox with a weird indie vibe",
-          img: "./assets/scenes/card-haunted.jpg",
-          badge: "Adventure",
-        },
-      ],
-    },
-    {
-      key: "grunge",
-      label: "🧱 Grunge",
-      theme: "pink",
-      games: [
-        {
-          title: "DARK SOULS II",
-          desc: "Punishing fights and bleak atmosphere",
-          img: "./assets/scenes/bg-crypts.jpg",
-          badge: "Soulslike",
-        },
-        {
-          title: "DARK SOULS III",
-          desc: "Fast, brutal combat in a dying world",
-          img: "./assets/scenes/card-crypts.jpg",
-          badge: "Bosses",
-        },
-        {
-          title: "Mortal Shell",
-          desc: "Heavy, grim, and built on pressure",
-          img: "./assets/scenes/card-dark-worlds.jpg",
-          badge: "Dark",
-        },
-        {
-          title: "Lords of the Fallen",
-          desc: "Dark fantasy with weight and grit",
-          img: "./assets/scenes/bg-crypts.jpg",
-          badge: "Fantasy",
-        },
-      ],
-    },
-    {
-      key: "neon",
-      label: "✨ Neon",
-      theme: "purple",
-      games: [
-        {
-          title: "Cyberpunk 2077",
-          desc: "Night City stories under neon lights",
-          img: "./assets/scenes/card-dark-worlds.jpg",
-          badge: "RPG",
-        },
-        {
-          title: "Deus Ex: Mankind Divided",
-          desc: "Stealth, augmentation, and cyberpunk style",
-          img: "./assets/scenes/card-crypts.jpg",
-          badge: "Stealth",
-        },
-        {
-          title: "Watch_Dogs 2",
-          desc: "Hacking chaos with a brighter neon edge",
-          img: "./assets/scenes/card-dark-worlds.jpg",
-          badge: "Open World",
-        },
-        {
-          title: "Splitgate",
-          desc: "Arena chaos with sci-fi energy",
-          img: "./assets/scenes/card-haunted.jpg",
-          badge: "FPS",
-        },
-      ],
-    },
-  ];
+    const WIKI = {
+      "Dead Space 3": "https://en.wikipedia.org/wiki/Dead_Space_3",
+      "Dying Light": "https://en.wikipedia.org/wiki/Dying_Light",
+      "Project Zomboid": "https://en.wikipedia.org/wiki/Project_Zomboid",
+      "State of Decay": "https://en.wikipedia.org/wiki/State_of_Decay",
 
-  mount.innerHTML = `
+      DayZ: "https://en.wikipedia.org/wiki/DayZ_(video_game)",
+      Rust: "https://en.wikipedia.org/wiki/Rust_(video_game)",
+      Subnautica: "https://en.wikipedia.org/wiki/Subnautica",
+      "Stranded Deep": "https://en.wikipedia.org/wiki/Stranded_Deep",
+
+      Moonlighter: "https://en.wikipedia.org/wiki/Moonlighter",
+      Terraria: "https://en.wikipedia.org/wiki/Terraria",
+      "Hollow Knight": "https://en.wikipedia.org/wiki/Hollow_Knight",
+      Starbound: "https://en.wikipedia.org/wiki/Starbound",
+
+      "DARK SOULS II": "https://en.wikipedia.org/wiki/Dark_Souls_II",
+      "DARK SOULS III": "https://en.wikipedia.org/wiki/Dark_Souls_III",
+      "Mortal Shell": "https://en.wikipedia.org/wiki/Mortal_Shell",
+      "Lords of the Fallen":
+        "https://en.wikipedia.org/wiki/Lords_of_the_Fallen",
+
+      "Cyberpunk 2077": "https://en.wikipedia.org/wiki/Cyberpunk_2077",
+      "Deus Ex: Mankind Divided":
+        "https://en.wikipedia.org/wiki/Deus_Ex:_Mankind_Divided",
+      "Watch Dogs 2": "https://en.wikipedia.org/wiki/Watch_Dogs_2",
+      Splitgate: "https://en.wikipedia.org/wiki/Splitgate",
+    };
+
+    const FLAVORS = [
+      {
+        key: "horror",
+        label: "💀 Horror",
+        theme: "green",
+        games: [
+          {
+            title: "Dead Space 3",
+            desc: "Co-op sci-fi horror and necromorph chaos",
+            img: "./assets/games/dead-space-3.jpg",
+            badge: "Sci-fi",
+          },
+          {
+            title: "Dying Light",
+            desc: "Parkour, infected nights, and pressure",
+            img: "./assets/games/dying-light.jpg",
+            badge: "Action",
+          },
+          {
+            title: "Project Zomboid",
+            desc: "Slow-burn zombie survival sandbox",
+            img: "./assets/games/project-zomboid.jpg",
+            badge: "Sandbox",
+          },
+          {
+            title: "State of Decay",
+            desc: "Community survival in a dead world",
+            img: "./assets/games/state-of-decay.jpg",
+            badge: "Survival",
+          },
+        ],
+      },
+      {
+        key: "survival",
+        label: "🪓 Survival",
+        theme: "gold",
+        games: [
+          {
+            title: "DayZ",
+            desc: "Open-ended survival with constant tension",
+            img: "./assets/games/dayz.jpg",
+            badge: "Hardcore",
+          },
+          {
+            title: "Rust",
+            desc: "Build, raid, survive, repeat",
+            img: "./assets/games/rust.jpg",
+            badge: "PvP",
+          },
+          {
+            title: "Subnautica",
+            desc: "Deep ocean exploration and survival",
+            img: "./assets/games/subnautica.jpg",
+            badge: "Explore",
+          },
+          {
+            title: "Stranded Deep",
+            desc: "Island survival with a rough edge",
+            img: "./assets/games/stranded-deep.jpg",
+            badge: "Craft",
+          },
+        ],
+      },
+      {
+        key: "indie",
+        label: "🧪 Indie",
+        theme: "blue",
+        games: [
+          {
+            title: "Moonlighter",
+            desc: "Dungeon crawling by night, shopkeeping by day",
+            img: "./assets/games/moonlighter.jpg",
+            badge: "Action RPG",
+          },
+          {
+            title: "Terraria",
+            desc: "Build, explore, and fight through chaos",
+            img: "./assets/games/terraria.jpg",
+            badge: "Sandbox",
+          },
+          {
+            title: "Hollow Knight",
+            desc: "Tight combat in a haunting world",
+            img: "./assets/games/hollow-knight.jpg",
+            badge: "Metroidvania",
+          },
+          {
+            title: "Starbound",
+            desc: "Space sandbox with a weird indie vibe",
+            img: "./assets/games/starbound.jpg",
+            badge: "Adventure",
+          },
+        ],
+      },
+      {
+        key: "grunge",
+        label: "🧱 Grunge",
+        theme: "pink",
+        games: [
+          {
+            title: "DARK SOULS II",
+            desc: "Punishing fights and bleak atmosphere",
+            img: "./assets/games/dark-souls-2.jpg",
+            badge: "Soulslike",
+          },
+          {
+            title: "DARK SOULS III",
+            desc: "Fast, brutal combat in a dying world",
+            img: "./assets/games/dark-souls-3.jpg",
+            badge: "Bosses",
+          },
+          {
+            title: "Mortal Shell",
+            desc: "Heavy, grim, and built on pressure",
+            img: "./assets/games/mortal-shell.jpg",
+            badge: "Dark",
+          },
+          {
+            title: "Lords of the Fallen",
+            desc: "Dark fantasy with weight and grit",
+            img: "./assets/games/lords-of-the-fallen.jpg",
+            badge: "Fantasy",
+          },
+        ],
+      },
+      {
+        key: "neon",
+        label: "✨ Neon",
+        theme: "purple",
+        games: [
+          {
+            title: "Cyberpunk 2077",
+            desc: "Night City stories under neon lights",
+            img: "./assets/games/cyberpunk-2077.jpg",
+            badge: "RPG",
+          },
+          {
+            title: "Deus Ex: Mankind Divided",
+            desc: "Stealth, augmentation, and cyberpunk style",
+            img: "./assets/games/deus-ex-mankind-divided.jpg",
+            badge: "Stealth",
+          },
+          {
+            title: "Watch Dogs 2",
+            desc: "Hacking chaos with a brighter neon edge",
+            img: "./assets/games/watch-dogs-2.jpg",
+            badge: "Open World",
+          },
+          {
+            title: "Splitgate",
+            desc: "Arena chaos with sci-fi energy",
+            img: "./assets/games/splitgate.jpg",
+            badge: "FPS",
+          },
+        ],
+      },
+    ];
+
+    mount.innerHTML = `
     <div class="gamesStatus panel panel--wide">
       <div class="gamesStatus__pill">
         CURRENTLY PLAYING
@@ -456,62 +535,75 @@ async function initGamesMount() {
     </div>
   `;
 
-  const tagWrap = $("#gameTags", mount);
-  const grid = $("#gameGrid", mount);
-  if (!tagWrap || !grid) return;
+    const tagWrap = $("#gameTags", mount);
+    const grid = $("#gameGrid", mount);
+    if (!tagWrap || !grid) return;
 
-  const cardHTML = (g) => {
-    const img = g.img || "./assets/scenes/card-dark-worlds.jpg";
-    const badge = g.badge ? `<span class="miniCard__badge">${g.badge}</span>` : "";
-    return `
-      <article class="miniCard" tabindex="0">
-        <div class="miniCard__bg" style="background-image:url('${img}')"></div>
-        <div class="miniCard__shade"></div>
-        ${badge}
-        <h4 class="miniCard__title">${g.title}</h4>
-        <p class="miniCard__desc">${g.desc || ""}</p>
-      </article>
-    `;
-  };
+   const cardHTML = (g) => {
+  const img = g.img || "./assets/games/card-dark-worlds.jpg";
+  const badge = g.badge
+    ? `<span class="miniCard__badge">${g.badge}</span>`
+    : "";
 
-  const renderTags = () => {
-    tagWrap.innerHTML = FLAVORS.map((f, idx) => {
-      const active = idx === 0 ? "is-active" : "";
-      return `<button class="gameTag ${active}" type="button" data-key="${f.key}" data-theme="${f.theme}">${f.label}</button>`;
-    }).join("");
-  };
+  const wiki = WIKI[g.title];
 
-  const renderGrid = (key) => {
-    const flavor = FLAVORS.find((f) => f.key === key) || FLAVORS[0];
-    grid.setAttribute("data-theme", flavor.theme || "");
-    grid.innerHTML = flavor.games.map(cardHTML).join("");
-  };
+  return `
+    <article class="miniCard" tabindex="0">
+      <div class="miniCard__bg" style="background-image:url('${img}')"></div>
+      <div class="miniCard__shade"></div>
 
-  renderTags();
-  renderGrid(FLAVORS[0].key);
+      ${badge}
 
-  tagWrap.addEventListener("click", (e) => {
-    const btn = e.target.closest(".gameTag");
-    if (!btn) return;
+      ${
+        wiki
+          ? `<a class="miniCard__wiki" href="${wiki}" target="_blank" rel="noopener noreferrer">ℹ</a>`
+          : ""
+      }
 
-    $$(".gameTag", tagWrap).forEach((b) => b.classList.remove("is-active"));
-    btn.classList.add("is-active");
+      <h4 class="miniCard__title">${g.title}</h4>
+      <p class="miniCard__desc">${g.desc || ""}</p>
+    </article>
+  `;
+};
 
-    const key = btn.getAttribute("data-key");
-    if (key) renderGrid(key);
-  });
-}
+    const renderTags = () => {
+      tagWrap.innerHTML = FLAVORS.map((f, idx) => {
+        const active = idx === 0 ? "is-active" : "";
+        return `<button class="gameTag ${active}" type="button" data-key="${f.key}" data-theme="${f.theme}">${f.label}</button>`;
+      }).join("");
+    };
 
+    const renderGrid = (key) => {
+      const flavor = FLAVORS.find((f) => f.key === key) || FLAVORS[0];
+      grid.setAttribute("data-theme", flavor.theme || "");
+      grid.innerHTML = flavor.games.map(cardHTML).join("");
+    };
 
-   document.addEventListener("DOMContentLoaded", () => {
-    initMobileNav();
+    renderTags();
+    renderGrid(FLAVORS[0].key);
+
+    tagWrap.addEventListener("click", (e) => {
+      const btn = e.target.closest(".gameTag");
+      if (!btn) return;
+
+      $$(".gameTag", tagWrap).forEach((b) => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+
+      const key = btn.getAttribute("data-key");
+      if (key) renderGrid(key);
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    runPixelDissolve();
+    initCursorGlow();
     initLinksDropdown();
+    initMobileNav();
     initThemeToggle();
     initTwitchEmbed();
     initYouTubeLiteEmbeds();
-    initFooterBits();
     initHighlightCards();
     initGamesMount();
-    runPixelDissolve();
+    initFooterBits();
   });
 })();
