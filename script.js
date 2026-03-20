@@ -249,67 +249,258 @@
     });
   }
 
-  function initGamesMount() {
-    const mount = $("#gamesMount");
-    if (!mount) return;
+ async function getCurrentlyPlayingStatus() {
+  const fallback = {
+    game: "DARK SOULS II",
+    note: "Currently grinding through Drangleic.",
+  };
 
-    const FLAVORS = [
-      {
-        key: "horror",
-        label: "💀 Horror",
-        theme: "green",
-        games: [
-          { title: "Resident Evil (series)", desc: "Classic horror + tension", img: "./assets/scenes/card-haunted.jpg", badge: "Horror" },
-          { title: "Outlast", desc: "Run, hide, panic", img: "./assets/scenes/card-dark-worlds.jpg", badge: "Chase" },
-          { title: "Phasmophobia", desc: "Ghost hunting chaos", img: "./assets/scenes/card-crypts.jpg", badge: "Co-op" },
-          { title: "Dead by Daylight", desc: "1v4 terror with the crew", img: "./assets/scenes/card-haunted.jpg", badge: "PvP" },
-        ],
-      },
-      {
-        key: "survival",
-        label: "🪓 Survival",
-        theme: "gold",
-        games: [
-          { title: "The Long Dark", desc: "Cold, quiet, brutal survival", img: "./assets/scenes/bg-crypts.jpg", badge: "Hardcore" },
-          { title: "Subnautica", desc: "Deep ocean dread + crafting", img: "./assets/scenes/card-dark-worlds.jpg", badge: "Explore" },
-          { title: "Project Zomboid", desc: "Zombie sandbox chaos", img: "./assets/scenes/card-crypts.jpg", badge: "Sandbox" },
-          { title: "Sons of the Forest", desc: "Crafting + cannibals + screams", img: "./assets/scenes/card-haunted.jpg", badge: "Co-op" },
-        ],
-      },
-      {
-        key: "indie",
-        label: "🧪 Indie",
-        theme: "blue",
-        games: [
-          { title: "Lethal Company", desc: "Comedy terror with friends", img: "./assets/scenes/card-crypts.jpg", badge: "Co-op" },
-          { title: "SIGNALIS", desc: "Retro sci-fi horror masterpiece", img: "./assets/scenes/card-dark-worlds.jpg", badge: "Story" },
-          { title: "Iron Lung", desc: "Claustrophobic submarine nightmare", img: "./assets/scenes/bg-crypts.jpg", badge: "Short" },
-          { title: "Inscryption", desc: "Card game… until it isn’t", img: "./assets/scenes/card-haunted.jpg", badge: "Twist" },
-        ],
-      },
-      {
-        key: "grunge",
-        label: "🧱 Grunge",
-        theme: "pink",
-        games: [
-          { title: "Darkwood", desc: "Top-down dread", img: "./assets/scenes/bg-crypts.jpg", badge: "Atmosphere" },
-          { title: "The Forest", desc: "Crash-landed nightmares", img: "./assets/scenes/card-crypts.jpg", badge: "Craft" },
-          { title: "DREDGE", desc: "Cozy fishing… with teeth", img: "./assets/scenes/card-dark-worlds.jpg", badge: "Creepy" },
-          { title: "S.T.A.L.K.E.R. (modded)", desc: "Ruin + paranoia", img: "./assets/scenes/bg-crypts.jpg", badge: "Grit" },
-        ],
-      },
-      {
-        key: "neon",
-        label: "✨ Neon",
-        theme: "purple",
-        games: [
-          { title: "Observer: System Redux", desc: "Cyberpunk horror noir", img: "./assets/scenes/card-dark-worlds.jpg", badge: "Noir" },
-          { title: "Ghostrunner", desc: "Neon speed chaos", img: "./assets/scenes/card-crypts.jpg", badge: "Action" },
-          { title: "Cyberpunk 2077", desc: "Night City stories", img: "./assets/scenes/card-dark-worlds.jpg", badge: "RPG" },
-          { title: "Katana ZERO", desc: "Violence + neon time", img: "./assets/scenes/card-haunted.jpg", badge: "Indie" },
-        ],
-      },
-    ];
+  try {
+    const res = await fetch("./currently-playing.json", { cache: "no-store" });
+    if (!res.ok) return fallback;
+
+    const data = await res.json();
+    return {
+      game:
+        typeof data.game === "string" && data.game.trim()
+          ? data.game.trim()
+          : fallback.game,
+      note:
+        typeof data.note === "string" && data.note.trim()
+          ? data.note.trim()
+          : fallback.note,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
+async function initGamesMount() {
+  const mount = $("#gamesMount");
+  if (!mount) return;
+
+  const STREAM_STATUS = await getCurrentlyPlayingStatus();
+
+  const FLAVORS = [
+    {
+      key: "horror",
+      label: "💀 Horror",
+      theme: "green",
+      games: [
+        {
+          title: "Dead Space 3",
+          desc: "Co-op sci-fi horror and necromorph chaos",
+          img: "./assets/scenes/card-haunted.jpg",
+          badge: "Sci-fi",
+        },
+        {
+          title: "Dying Light",
+          desc: "Parkour, infected nights, and pressure",
+          img: "./assets/scenes/card-dark-worlds.jpg",
+          badge: "Action",
+        },
+        {
+          title: "Project Zomboid",
+          desc: "Slow-burn zombie survival sandbox",
+          img: "./assets/scenes/card-crypts.jpg",
+          badge: "Sandbox",
+        },
+        {
+          title: "State of Decay",
+          desc: "Community survival in a dead world",
+          img: "./assets/scenes/card-haunted.jpg",
+          badge: "Survival",
+        },
+      ],
+    },
+    {
+      key: "survival",
+      label: "🪓 Survival",
+      theme: "gold",
+      games: [
+        {
+          title: "DayZ",
+          desc: "Open-ended survival with constant tension",
+          img: "./assets/scenes/bg-crypts.jpg",
+          badge: "Hardcore",
+        },
+        {
+          title: "Rust",
+          desc: "Build, raid, survive, repeat",
+          img: "./assets/scenes/card-dark-worlds.jpg",
+          badge: "PvP",
+        },
+        {
+          title: "Subnautica",
+          desc: "Deep ocean exploration and survival",
+          img: "./assets/scenes/card-crypts.jpg",
+          badge: "Explore",
+        },
+        {
+          title: "Stranded Deep",
+          desc: "Island survival with a rough edge",
+          img: "./assets/scenes/card-haunted.jpg",
+          badge: "Craft",
+        },
+      ],
+    },
+    {
+      key: "indie",
+      label: "🧪 Indie",
+      theme: "blue",
+      games: [
+        {
+          title: "Moonlighter",
+          desc: "Dungeon crawling by night, shopkeeping by day",
+          img: "./assets/scenes/card-crypts.jpg",
+          badge: "Action RPG",
+        },
+        {
+          title: "Terraria",
+          desc: "Build, explore, and fight through chaos",
+          img: "./assets/scenes/card-dark-worlds.jpg",
+          badge: "Sandbox",
+        },
+        {
+          title: "Hollow Knight",
+          desc: "Tight combat in a haunting world",
+          img: "./assets/scenes/bg-crypts.jpg",
+          badge: "Metroidvania",
+        },
+        {
+          title: "Starbound",
+          desc: "Space sandbox with a weird indie vibe",
+          img: "./assets/scenes/card-haunted.jpg",
+          badge: "Adventure",
+        },
+      ],
+    },
+    {
+      key: "grunge",
+      label: "🧱 Grunge",
+      theme: "pink",
+      games: [
+        {
+          title: "DARK SOULS II",
+          desc: "Punishing fights and bleak atmosphere",
+          img: "./assets/scenes/bg-crypts.jpg",
+          badge: "Soulslike",
+        },
+        {
+          title: "DARK SOULS III",
+          desc: "Fast, brutal combat in a dying world",
+          img: "./assets/scenes/card-crypts.jpg",
+          badge: "Bosses",
+        },
+        {
+          title: "Mortal Shell",
+          desc: "Heavy, grim, and built on pressure",
+          img: "./assets/scenes/card-dark-worlds.jpg",
+          badge: "Dark",
+        },
+        {
+          title: "Lords of the Fallen",
+          desc: "Dark fantasy with weight and grit",
+          img: "./assets/scenes/bg-crypts.jpg",
+          badge: "Fantasy",
+        },
+      ],
+    },
+    {
+      key: "neon",
+      label: "✨ Neon",
+      theme: "purple",
+      games: [
+        {
+          title: "Cyberpunk 2077",
+          desc: "Night City stories under neon lights",
+          img: "./assets/scenes/card-dark-worlds.jpg",
+          badge: "RPG",
+        },
+        {
+          title: "Deus Ex: Mankind Divided",
+          desc: "Stealth, augmentation, and cyberpunk style",
+          img: "./assets/scenes/card-crypts.jpg",
+          badge: "Stealth",
+        },
+        {
+          title: "Watch_Dogs 2",
+          desc: "Hacking chaos with a brighter neon edge",
+          img: "./assets/scenes/card-dark-worlds.jpg",
+          badge: "Open World",
+        },
+        {
+          title: "Splitgate",
+          desc: "Arena chaos with sci-fi energy",
+          img: "./assets/scenes/card-haunted.jpg",
+          badge: "FPS",
+        },
+      ],
+    },
+  ];
+
+  mount.innerHTML = `
+    <div class="gamesStatus panel panel--wide">
+      <div class="gamesStatus__pill">
+        CURRENTLY PLAYING
+      </div>
+      <div class="gamesStatus__body">
+        <h3 class="gamesStatus__title">${STREAM_STATUS.game}</h3>
+        <p class="gamesStatus__text">${STREAM_STATUS.note}</p>
+      </div>
+    </div>
+
+    <div class="games">
+      <div class="gameTags" id="gameTags"></div>
+      <div class="gameGrid" id="gameGrid"></div>
+    </div>
+  `;
+
+  const tagWrap = $("#gameTags", mount);
+  const grid = $("#gameGrid", mount);
+  if (!tagWrap || !grid) return;
+
+  const cardHTML = (g) => {
+    const img = g.img || "./assets/scenes/card-dark-worlds.jpg";
+    const badge = g.badge ? `<span class="miniCard__badge">${g.badge}</span>` : "";
+    return `
+      <article class="miniCard" tabindex="0">
+        <div class="miniCard__bg" style="background-image:url('${img}')"></div>
+        <div class="miniCard__shade"></div>
+        ${badge}
+        <h4 class="miniCard__title">${g.title}</h4>
+        <p class="miniCard__desc">${g.desc || ""}</p>
+      </article>
+    `;
+  };
+
+  const renderTags = () => {
+    tagWrap.innerHTML = FLAVORS.map((f, idx) => {
+      const active = idx === 0 ? "is-active" : "";
+      return `<button class="gameTag ${active}" type="button" data-key="${f.key}" data-theme="${f.theme}">${f.label}</button>`;
+    }).join("");
+  };
+
+  const renderGrid = (key) => {
+    const flavor = FLAVORS.find((f) => f.key === key) || FLAVORS[0];
+    grid.setAttribute("data-theme", flavor.theme || "");
+    grid.innerHTML = flavor.games.map(cardHTML).join("");
+  };
+
+  renderTags();
+  renderGrid(FLAVORS[0].key);
+
+  tagWrap.addEventListener("click", (e) => {
+    const btn = e.target.closest(".gameTag");
+    if (!btn) return;
+
+    $$(".gameTag", tagWrap).forEach((b) => b.classList.remove("is-active"));
+    btn.classList.add("is-active");
+
+    const key = btn.getAttribute("data-key");
+    if (key) renderGrid(key);
+  });
+}
 
     mount.innerHTML = `
       <div class="games">
