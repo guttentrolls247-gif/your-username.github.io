@@ -4,6 +4,39 @@
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
+  async function getCurrentlyPlayingStatus() {
+    const fallback = {
+      live: false,
+      game: "DARK SOULS II",
+      note: "Currently grinding through Drangleic.",
+      title: "",
+      viewer_count: 0,
+      url: "https://www.twitch.tv/D3LTANIN3ttv",
+      last_updated: "",
+    };
+
+    try {
+      const res = await fetch("./currently-playing.json", {
+        cache: "no-store",
+      });
+      if (!res.ok) return fallback;
+
+      const data = await res.json();
+
+      return {
+        live: Boolean(data.live),
+        game: data.game || fallback.game,
+        note: data.note || fallback.note,
+        title: data.title || "",
+        viewer_count: Number(data.viewer_count) || 0,
+        url: data.url || fallback.url,
+        last_updated: data.last_updated || fallback.last_updated,
+      };
+    } catch {
+      return fallback;
+    }
+  }
+
   function initCursorGlow() {
     const reduce = window.matchMedia?.(
       "(prefers-reduced-motion: reduce)",
@@ -519,35 +552,55 @@
     ];
 
     mount.innerHTML = `
-    <div class="gamesStatus panel panel--wide">
-      <div class="gamesStatus__pill">
-        CURRENTLY PLAYING
-      </div>
-      <div class="gamesStatus__body">
-        <h3 class="gamesStatus__title">${STREAM_STATUS.game}</h3>
-        <p class="gamesStatus__text">${STREAM_STATUS.note}</p>
+  <div class="gamesStatus panel panel--wide">
+    <div class="gamesStatus__pill ${STREAM_STATUS.live ? "is-live" : "is-offline"}">
+      ${STREAM_STATUS.live ? "LIVE NOW" : "CURRENTLY PLAYING"}
+    </div>
+    <div class="gamesStatus__body">
+      <h3 class="gamesStatus__title">${STREAM_STATUS.game}</h3>
+      <p class="gamesStatus__text">
+        ${
+          STREAM_STATUS.live
+            ? `${STREAM_STATUS.title || STREAM_STATUS.note}${
+                STREAM_STATUS.viewer_count > 0
+                  ? ` • ${STREAM_STATUS.viewer_count} viewers`
+                  : ""
+              }`
+            : STREAM_STATUS.note
+        }
+      </p>
+      <div style="margin-top:10px;">
+        <a
+          class="btn btn-ghost"
+          href="${STREAM_STATUS.url}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          ${STREAM_STATUS.live ? "Watch live on Twitch" : "Visit Twitch channel"}
+        </a>
       </div>
     </div>
+  </div>
 
-    <div class="games">
-      <div class="gameTags" id="gameTags"></div>
-      <div class="gameGrid" id="gameGrid"></div>
-    </div>
-  `;
+  <div class="games">
+    <div class="gameTags" id="gameTags"></div>
+    <div class="gameGrid" id="gameGrid"></div>
+  </div>
+`;
 
     const tagWrap = $("#gameTags", mount);
     const grid = $("#gameGrid", mount);
     if (!tagWrap || !grid) return;
 
-   const cardHTML = (g) => {
-  const img = g.img || "./assets/games/card-dark-worlds.jpg";
-  const badge = g.badge
-    ? `<span class="miniCard__badge">${g.badge}</span>`
-    : "";
+    const cardHTML = (g) => {
+      const img = g.img || "./assets/games/card-dark-worlds.jpg";
+      const badge = g.badge
+        ? `<span class="miniCard__badge">${g.badge}</span>`
+        : "";
 
-  const wiki = WIKI[g.title];
+      const wiki = WIKI[g.title];
 
-  return `
+      return `
     <article class="miniCard" tabindex="0">
       <div class="miniCard__bg" style="background-image:url('${img}')"></div>
       <div class="miniCard__shade"></div>
@@ -564,7 +617,7 @@
       <p class="miniCard__desc">${g.desc || ""}</p>
     </article>
   `;
-};
+    };
 
     const renderTags = () => {
       tagWrap.innerHTML = FLAVORS.map((f, idx) => {
