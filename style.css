@@ -3,7 +3,6 @@
    ========================= */
 
 html {
-  overflow-y: scroll;
   scroll-behavior: smooth;
 }
 
@@ -614,12 +613,7 @@ body.is-glow-active::before {
 }
 
 :root[data-theme="light"] .hero-copy {
-  background: rgba(255, 255, 255, 0.22);
-  border: 1px solid rgba(10, 12, 18, 0.08);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.22) inset;
-  border-radius: 18px;
-  backdrop-filter: blur(10px);
-  padding: 18px;
+  all: unset;
 }
 
 .badge {
